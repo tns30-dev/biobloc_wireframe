@@ -278,15 +278,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <!-- Stats -->
         <div class="stats">
           <div class="stat">
-            <div class="stat-label">Overall Health</div>
-            <div class="stat-val">94.7%</div>
-            <div class="stat-extra good">All systems nominal</div>
-            <div class="stat-bar"><div class="stat-bar-fill" style="width:94.7%;background:var(--green)"></div></div>
+            <div class="stat-label">Water Quality</div>
+            <div class="stat-val" style="color:var(--green)">Optimal</div>
+            <div class="stat-extra muted">Across 3 monitored tanks</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:94%;background:var(--green)"></div></div>
           </div>
           <div class="stat">
             <div class="stat-label">Active Alerts</div>
-            <div class="stat-val">00</div>
-            <div class="stat-extra good">No active alerts</div>
+            <div class="stat-val" style="color:var(--amber)">01</div>
+            <div class="stat-extra warn">Pond Gamma-03</div>
           </div>
           <div class="stat">
             <div class="stat-label">Avg Dissolved O2</div>
@@ -300,6 +300,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
             <div class="stat-extra muted">All nodes synced</div>
             <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--navy)"></div></div>
           </div>
+        </div>
+
+        <!-- Active Alerts -->
+        <div class="section-hdr"><div class="section-title">Active Alerts</div></div>
+        <div class="pd-alerts" style="margin-bottom:20px">
+          <div class="pd-alert-item" style="justify-content:space-between"><div style="display:flex;align-items:flex-start;gap:10px"><span class="pd-alert-dot" style="background:var(--amber)"></span><div><div class="pd-alert-text">DO slightly below optimal in Pond Gamma-03</div><div class="pd-alert-meta">6.2 mg/L (optimal: 7.0+) - 2 hours ago</div></div></div><button class="btn-outline" style="flex-shrink:0;font-size:10px;padding:4px 12px;color:var(--green);border-color:var(--green)">Resolve</button></div>
         </div>
 
         <!-- Monitored Tanks -->
