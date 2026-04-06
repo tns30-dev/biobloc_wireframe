@@ -764,14 +764,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="section-hdr"><div class="section-title">Per-Tank Savings Breakdown</div></div>
         <div class="tank-table-wrap">
         <table class="tank-table">
-          <thead><tr><th>Tank</th><th>Treatment Start</th><th>Days</th><th>kWh Before</th><th>kWh After</th><th>Monthly Saving</th><th>Total Saved</th></tr></thead>
+          <thead><tr><th>Tank</th><th>Treatment Start</th><th>Days</th><th>Circulation Saving</th><th>Aeration Saving</th><th>Total Monthly</th><th>Total Saved</th></tr></thead>
           <tbody>
             <tr>
               <td><div class="tank-name">Pond Alpha-01</div></td>
               <td>Mar 1, 2026</td>
               <td>36</td>
-              <td>25.3 kWh/day</td>
-              <td style="color:var(--green);font-weight:600">18.1 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">$220/mo</td>
+              <td style="color:var(--green);font-weight:600">$360/mo</td>
               <td style="color:var(--green);font-weight:600">$580/mo</td>
               <td style="color:var(--green);font-weight:600">$1,240</td>
             </tr>
@@ -779,8 +779,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
               <td><div class="tank-name">Pond Beta-02</div></td>
               <td>Mar 5, 2026</td>
               <td>32</td>
-              <td>24.8 kWh/day</td>
-              <td style="color:var(--green);font-weight:600">17.5 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">$195/mo</td>
+              <td style="color:var(--green);font-weight:600">$325/mo</td>
               <td style="color:var(--green);font-weight:600">$520/mo</td>
               <td style="color:var(--green);font-weight:600">$980</td>
             </tr>
@@ -788,8 +788,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
               <td><div class="tank-name">Pond Gamma-03</div></td>
               <td>Apr 1, 2026</td>
               <td>5</td>
-              <td>26.1 kWh/day</td>
-              <td style="font-weight:600">23.4 kWh/day</td>
+              <td style="color:var(--amber);font-weight:600">$120/mo</td>
+              <td style="color:var(--amber);font-weight:600">$200/mo</td>
               <td style="color:var(--amber);font-weight:600">$320/mo</td>
               <td style="font-weight:600">$620</td>
             </tr>
@@ -802,28 +802,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="tank-card">
             <div class="tc-top"><div><div class="tc-name">Pond Alpha-01</div><div class="tc-phase">Treated from Mar 1 (36 days)</div></div></div>
             <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
-            <div class="tc-params">
-              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">25.3 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val" style="color:var(--green)">18.1 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--green)">$1,240</div></div>
+            <div class="tc-params" style="grid-template-columns:repeat(4,1fr)">
+              <div class="tc-p"><div class="tc-p-label">Circulation</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$220<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Aeration</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$360<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Monthly</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$580<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Total</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$1,240</div></div>
             </div>
           </div>
           <div class="tank-card">
             <div class="tc-top"><div><div class="tc-name">Pond Beta-02</div><div class="tc-phase">Treated from Mar 5 (32 days)</div></div></div>
             <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
-            <div class="tc-params">
-              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">24.8 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val" style="color:var(--green)">17.5 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--green)">$980</div></div>
+            <div class="tc-params" style="grid-template-columns:repeat(4,1fr)">
+              <div class="tc-p"><div class="tc-p-label">Circulation</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$195<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Aeration</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$325<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Monthly</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$520<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Total</div><div class="tc-p-val" style="color:var(--green);font-size:14px">$980</div></div>
             </div>
           </div>
           <div class="tank-card">
             <div class="tc-top"><div><div class="tc-name">Pond Gamma-03</div><div class="tc-phase">Treated from Apr 1 (5 days)</div></div></div>
             <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
-            <div class="tc-params">
-              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">26.1 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val">23.4 <span class="tc-p-unit">kWh/d</span></div></div>
-              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--amber)">$620</div></div>
+            <div class="tc-params" style="grid-template-columns:repeat(4,1fr)">
+              <div class="tc-p"><div class="tc-p-label">Circulation</div><div class="tc-p-val" style="color:var(--amber);font-size:14px">$120<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Aeration</div><div class="tc-p-val" style="color:var(--amber);font-size:14px">$200<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Monthly</div><div class="tc-p-val" style="color:var(--amber);font-size:14px">$320<span class="tc-p-unit">/mo</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Total</div><div class="tc-p-val" style="font-size:14px">$620</div></div>
             </div>
           </div>
         </div>
