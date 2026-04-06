@@ -1,155 +1,955 @@
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F8FAFB;color:#111827}
-.shell{display:flex;min-height:100vh}
-.sidebar{width:220px;background:#FFF;border-right:1px solid #E5E7EB;padding:20px 0;display:flex;flex-direction:column}
-.sidebar-logo{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid #F3F4F6;margin-bottom:8px}
-.logo-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#0D9488,#065F46);display:flex;align-items:center;justify-content:center;color:#FFF;font-weight:700;font-size:14px}
-.sidebar-logo span{font-weight:700;font-size:16px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;cursor:pointer;font-size:13px;font-weight:500;color:#6B7280;border-left:3px solid transparent;transition:all .15s}
-.nav-item:hover{background:#F9FAFB;color:#111827}
-.nav-item.active{background:#F0FDFA;color:#0D9488;border-left-color:#0D9488}
-.nav-item.disabled{color:#D1D5DB;cursor:default}
-.nav-item.disabled:hover{background:transparent;color:#D1D5DB}
-.main{flex:1;display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#FFF;border-bottom:1px solid #E5E7EB}
-.farm-select{background:#FFF;border:1px solid #D1D5DB;border-radius:8px;padding:6px 12px;font-size:12px;color:#374151;font-family:inherit}
-.avatar{width:32px;height:32px;border-radius:50%;background:#CCFBF1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0D9488}
-.content{padding:20px 24px;flex:1}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F7FA;color:#1a2332}
+:root{--navy:#0F2B3C;--blue:#1a5276;--teal:#0D9488;--accent:#2563EB;--green:#059669;--red:#DC2626;--amber:#D97706;--gray:#6B7280;--lt:#F0F2F5;--white:#FFFFFF;--border:#E2E6EC}
+
+/* Layout */
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* Top header */
+.header{background:var(--navy);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-logo{font-weight:700;font-size:15px}
+.header-sub{font-size:11px;color:#8899aa;display:none}
+.header-right{display:flex;align-items:center;gap:10px}
+.header-farm{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 10px;font-size:11px;color:#ccd;font-family:inherit}
+.header-avatar{width:28px;height:28px;border-radius:50%;background:#1a5276;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#8cb4d4}
+
+/* Bottom nav (mobile) */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px);z-index:100}
+.bottom-nav-inner{display:flex;justify-content:space-around}
+.bnav{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 12px;font-size:10px;color:var(--gray);cursor:pointer;border:none;background:none;font-family:inherit}
+.bnav.active{color:var(--navy);font-weight:600}
+.bnav svg{width:20px;height:20px}
+
+/* Sidebar (desktop) */
+.body-wrap{display:flex;flex:1}
+.sidebar{width:200px;background:var(--white);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
+.snav{display:flex;align-items:center;gap:8px;padding:10px 18px;font-size:13px;font-weight:500;color:var(--gray);cursor:pointer;border-left:3px solid transparent;transition:all .12s}
+.snav:hover{background:#f8f9fa;color:var(--navy)}
+.snav.active{background:#eef4f8;color:var(--navy);border-left-color:var(--navy);font-weight:600}
+.snav svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-ver{margin-top:auto;padding:14px 18px;font-size:10px;color:#ccc}
+
+/* Main content */
+.main{flex:1;padding:20px 24px;overflow-y:auto}
 .page{display:none}
 .page.active{display:block}
-.page-title{font-size:20px;font-weight:700;margin-bottom:4px}
-.page-sub{font-size:13px;color:#9CA3AF;margin-bottom:18px}
-.pond-row{display:flex;gap:14px;align-items:center;margin-bottom:18px}
-.pond-group{flex:1;display:flex;align-items:center;gap:10px;background:#FFF;border:1px solid #E5E7EB;border-radius:10px;padding:10px 14px}
-.pond-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:6px;white-space:nowrap}
-.pond-label.a{background:#CCFBF1;color:#0D9488}
-.pond-label.b{background:#F3F4F6;color:#6B7280}
-.pond-select{flex:1;border:1px solid #E5E7EB;border-radius:6px;padding:6px 10px;font-size:13px;font-family:inherit;background:#FAFAFA}
-.vs{background:#F3F4F6;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9CA3AF;flex-shrink:0}
-.live-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#10B981;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.live-text{font-size:12px;color:#10B981;font-weight:600}
-.live-time{font-size:12px;color:#9CA3AF}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.mc{border-radius:10px;padding:12px 14px}
-.mc.t{background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border:1px solid #99F6E4}
-.mc.c{background:#F9FAFB;border:1px solid #E5E7EB}
-.mc-label{font-size:10px;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-.mc-val{font-size:22px;font-weight:700}
-.mc-val.tl{color:#0D9488}
-.mc-val.dk{color:#374151}
-.mc-unit{font-size:12px;font-weight:500;color:#9CA3AF}
-.mc-chg{font-size:11px;font-weight:600;margin-top:2px}
-.mc-chg.up{color:#059669}
-.mc-chg.nt{color:#9CA3AF;font-weight:400}
-.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
-.cc{background:#FFF;border-radius:12px;border:1px solid #E5E7EB;padding:16px 18px}
-.cc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.cc-title{font-weight:600;font-size:13px}
-.cc-badge{font-size:9px;color:#0D9488;background:#CCFBF1;padding:3px 10px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.cc-wrap{position:relative;height:190px}
-.cc-legend{display:flex;gap:18px;margin-top:8px;font-size:11px;color:#6B7280}
-.lg-item{display:flex;align-items:center;gap:5px}
-.lg-line{width:14px;height:3px;display:inline-block;border-radius:2px}
-.lg-rect{width:14px;height:8px;display:inline-block;border-radius:1px}
-.hist-config{display:flex;gap:14px;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap}
-.cfg-group{display:flex;flex-direction:column;gap:4px}
-.cfg-label{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
-.cfg-select{border:1px solid #D1D5DB;border-radius:8px;padding:7px 12px;font-size:13px;font-family:inherit;background:#FFF}
-.cfg-btn{background:#0D9488;color:#FFF;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.cfg-btn:hover{background:#0F766E}
-.dt-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;background:#FFF;border-radius:14px;border:1px solid #E5E7EB}
-.dt-title{font-size:18px;font-weight:600;color:#9CA3AF;margin-bottom:6px}
-.dt-sub{font-size:13px;color:#D1D5DB}
+.pg-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.pg-sub{font-size:12px;color:var(--gray);margin-bottom:18px}
+
+/* Stats row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.stat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:700;color:var(--navy)}
+.stat-extra{font-size:11px;margin-top:4px}
+.stat-extra.good{color:var(--green)}
+.stat-extra.warn{color:var(--amber)}
+.stat-extra.bad{color:var(--red)}
+.stat-extra.muted{color:var(--gray)}
+.stat-bar{height:4px;border-radius:2px;background:#e5e7eb;margin-top:8px;overflow:hidden}
+.stat-bar-fill{height:100%;border-radius:2px}
+
+/* Tank table */
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:16px;font-weight:700;color:var(--navy)}
+.section-actions{display:flex;gap:8px}
+.btn-outline{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--navy);cursor:pointer;font-family:inherit;font-weight:500}
+.btn-outline:hover{background:#f0f2f5}
+.btn-primary{background:var(--navy);border:none;border-radius:6px;padding:6px 14px;font-size:11px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600}
+
+.tank-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tank-table th{text-align:left;padding:10px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);background:#f8f9fb;border-bottom:1px solid var(--border)}
+.tank-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f3f4f6}
+.tank-table tr:last-child td{border-bottom:none}
+.tank-name{font-weight:600;color:var(--navy)}
+.tank-phase{font-size:11px;color:var(--gray)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.badge.stable{background:#d1fae5;color:#065f46}
+.badge.alert{background:#fee2e2;color:#991b1b}
+.badge.monitor{background:#fef3c7;color:#92400e}
+.param-row{display:flex;align-items:center;gap:6px;font-size:12px}
+.param-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.param-dot.ok{background:var(--green)}
+.param-dot.warn{background:var(--amber)}
+.param-dot.bad{background:var(--red)}
+.details-link{font-size:11px;color:var(--accent);font-weight:500;cursor:pointer}
+.spark{display:inline-block;width:50px;height:18px;vertical-align:middle}
+
+/* Tank cards (mobile) */
+.tank-cards{display:none}
+.tank-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.tc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.tc-name{font-weight:600;font-size:14px;color:var(--navy)}
+.tc-phase{font-size:11px;color:var(--gray)}
+.tc-params{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.tc-p{text-align:center}
+.tc-p-label{font-size:9px;color:var(--gray);text-transform:uppercase;font-weight:600;letter-spacing:.03em}
+.tc-p-val{font-size:16px;font-weight:700;color:var(--navy)}
+.tc-p-unit{font-size:10px;color:var(--gray)}
+.tc-footer{display:flex;justify-content:flex-end}
+
+/* Logs */
+.logs{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:20px}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #f3f4f6}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.log-dot.info{background:var(--accent)}
+.log-dot.success{background:var(--green)}
+.log-dot.warning{background:var(--amber)}
+.log-dot.error{background:var(--red)}
+.log-text{font-size:12px;color:var(--navy);font-weight:500}
+.log-meta{font-size:10px;color:var(--gray);margin-top:1px}
+
+/* A/B Testing page */
+.ab-config{display:flex;gap:12px;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap}
+.ab-pond-row{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.ab-pond{flex:1;display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.ab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.ab-label.biobloc{background:#dbeafe;color:#1e40af}
+.ab-label.ref{background:#f3f4f6;color:#6b7280}
+.ab-select{flex:1;border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;background:#fafafa}
+.ab-vs{font-size:11px;font-weight:700;color:#ccc;flex-shrink:0}
+.ab-dates{display:flex;gap:8px;align-items:center}
+.ab-date-label{font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase}
+.ab-date{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;background:var(--white)}
+.ab-apply{background:var(--navy);border:none;border-radius:6px;padding:7px 18px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600}
+.ab-apply:hover{background:#1a3d52}
+
+.ab-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.abm{border-radius:8px;padding:10px 12px;border:1px solid var(--border)}
+.abm.bio{background:#eff6ff;border-color:#bfdbfe}
+.abm.ref{background:#f9fafb}
+.abm-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);margin-bottom:3px}
+.abm-val{font-size:20px;font-weight:700}
+.abm-val.bl{color:#1e40af}
+.abm-val.dk{color:#374151}
+.abm-unit{font-size:11px;color:var(--gray)}
+.abm-chg{font-size:10px;font-weight:600;margin-top:2px;color:var(--green)}
+.abm-chg.nt{color:var(--gray);font-weight:400}
+
+.ab-charts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
+.abc{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.abc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.abc-title{font-weight:600;font-size:13px;color:var(--navy)}
+.abc-wrap{position:relative;height:180px}
+.abc-legend{display:flex;gap:16px;margin-top:8px;font-size:10px;color:var(--gray)}
+.abc-lg{display:flex;align-items:center;gap:4px}
+.abc-line{width:12px;height:3px;border-radius:2px;display:inline-block}
+.abc-rect{width:12px;height:7px;border-radius:1px;display:inline-block}
+
+/* Pond Detail page */
+.pd-back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);cursor:pointer;margin-bottom:14px;font-weight:500}
+.pd-back:hover{text-decoration:underline}
+.pd-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.pd-title-wrap{flex:1}
+.pd-name{font-size:22px;font-weight:700;color:var(--navy)}
+.pd-phase{font-size:12px;color:var(--gray);margin-top:2px}
+.pd-actions{display:flex;gap:8px}
+.pd-badge-row{display:flex;gap:8px;margin-top:6px}
+
+.pd-params{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.pd-param{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.pd-param-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);margin-bottom:6px}
+.pd-param-val{font-size:32px;font-weight:700;color:var(--navy)}
+.pd-param-unit{font-size:14px;color:var(--gray);font-weight:500}
+.pd-param-status{font-size:11px;margin-top:6px;font-weight:500}
+.pd-param-status.ok{color:var(--green)}
+.pd-param-status.warn{color:var(--amber)}
+.pd-param-status.bad{color:var(--red)}
+.pd-param-range{font-size:10px;color:var(--gray);margin-top:4px}
+.pd-param-bar{height:4px;border-radius:2px;background:#e5e7eb;margin-top:6px;overflow:hidden}
+.pd-param-bar-fill{height:100%;border-radius:2px}
+
+.pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.pd-info{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px}
+.pd-info-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.pd-info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6}
+.pd-info-row:last-child{border-bottom:none}
+.pd-info-label{font-size:12px;color:var(--gray)}
+.pd-info-val{font-size:12px;font-weight:600;color:var(--navy)}
+.pd-tank-icon{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.pd-tank-emoji{font-size:36px}
+.pd-tank-type{font-size:12px;font-weight:600;color:var(--accent)}
+
+.pd-treatment{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.pd-treatment-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0}
+.pd-treatment-text{font-size:12px;color:#065f46;font-weight:500}
+.pd-treatment-date{font-weight:700}
+
+.pd-alerts{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.pd-alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #f3f4f6}
+.pd-alert-item:last-child{border-bottom:none}
+.pd-alert-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.pd-alert-text{font-size:12px;font-weight:500;color:var(--navy)}
+.pd-alert-meta{font-size:10px;color:var(--gray);margin-top:1px}
+
+.pd-log-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.pd-log-table th{text-align:left;padding:8px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);background:#f8f9fb;border-bottom:1px solid var(--border)}
+.pd-log-table td{padding:8px 14px;font-size:12px;border-bottom:1px solid #f3f4f6}
+.pd-log-table tr:last-child td{border-bottom:none}
+.pd-log-metric{font-weight:600;color:var(--accent)}
+.pd-log-manual{background:#fef3c7;color:#92400e;font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;text-transform:uppercase}
+.pd-log-auto{background:#dbeafe;color:#1e40af;font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;text-transform:uppercase}
+.log-filter{transition:all .12s}
+.log-filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* Efficiency Detail */
+.ed-milestone{position:relative;padding-left:28px;margin-bottom:0}
+.ed-timeline{position:relative}
+.ed-timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.ed-item{position:relative;padding:12px 0 12px 28px}
+.ed-item::before{content:'';position:absolute;left:4px;top:16px;width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--white);z-index:1}
+.ed-item.done::before{background:var(--green);border-color:var(--green)}
+.ed-item.active::before{background:var(--accent);border-color:var(--accent)}
+.ed-item.future::before{background:var(--lt);border-color:var(--border)}
+.ed-item-day{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);margin-bottom:2px}
+.ed-item-text{font-size:13px;font-weight:600;color:var(--navy)}
+.ed-item-sub{font-size:11px;color:var(--gray);margin-top:1px}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .bottom-nav{display:block}
+  .main{padding:14px 14px 80px}
+  .header-sub{display:inline}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-val{font-size:22px}
+  .tank-table-wrap{display:none}
+  .tank-cards{display:block}
+  .ab-pond-row{flex-direction:column;gap:8px}
+  .ab-vs{display:none}
+  .ab-metrics{grid-template-columns:repeat(2,1fr)}
+  .ab-charts{grid-template-columns:1fr}
+  .ab-config{flex-direction:column;align-items:stretch}
+  .ab-dates{flex-wrap:wrap}
+  .pg-title{font-size:18px}
+  .pd-params{grid-template-columns:1fr}
+  .pd-grid{grid-template-columns:1fr}
+  .pd-param-val{font-size:26px}
+  .pd-header{flex-direction:column}
+  .ed-charts-grid{grid-template-columns:1fr !important}
+}
 </style>
 
-<div class="shell">
-  <div class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">B</div><span>BioBloc</span></div>
-    <div class="nav-item active" onclick="switchTab('realtime')">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Real-time Monitoring
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <span class="header-logo">AquaShield Solutions</span>
+      <span class="header-sub">BioBloc Platform</span>
     </div>
-    <div class="nav-item" onclick="switchTab('historical')">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Historical Data
+    <div class="header-right">
+      <select class="header-farm"><option>Opal Fish Farm</option><option>Demo Farm B</option></select>
+      <div class="header-avatar">FM</div>
     </div>
-    <div class="nav-item disabled">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Digital Twin
-      <span style="font-size:9px;background:#F3F4F6;color:#9CA3AF;padding:2px 6px;border-radius:4px;margin-left:auto">Soon</span>
-    </div>
-    <div style="margin-top:auto;padding:16px 20px;font-size:11px;color:#D1D5DB">v0.1.0 - Wireframe</div>
   </div>
 
-  <div class="main">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:12px;color:#6B7280">Farm:</span>
-        <select class="farm-select"><option>Opal Fish Farm</option><option>Demo Farm B</option></select>
+  <div class="body-wrap">
+    <!-- Sidebar (desktop) -->
+    <div class="sidebar">
+      <div class="snav active" onclick="go('dash')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
       </div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:12px;color:#6B7280">Farm Manager</span>
-        <div class="avatar">FM</div>
+      <div class="snav" onclick="go('ab')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M8 3H3v5M16 21h5v-5M8 21H3v-5"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="3" x2="10" y2="10"/><line x1="21" y1="21" x2="14" y2="14"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        A/B Comparison
       </div>
+      <div class="snav" onclick="go('eff')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Treatment Efficiency
+      </div>
+      <div class="snav" onclick="go('fin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Financial Performance
+      </div>
+      <div style="margin-top:auto;padding:14px 18px;font-size:10px;color:#ccc">v0.2.0 - Wireframe</div>
     </div>
 
-    <div class="content">
-      <div id="page-realtime" class="page active">
-        <div class="page-title">Real-time Monitoring</div>
-        <div class="page-sub">Live A/B comparison between two ponds</div>
-        <div class="pond-row">
-          <div class="pond-group"><span class="pond-label a">Pond A</span><select class="pond-select"><option selected>Pond 1 (Treated from Mar 1, 2026)</option><option>Pond 2 (Treated from Mar 5, 2026)</option><option>Pond 3</option><option>Pond 4</option><option>Pond 5</option><option>Pond 6</option></select></div>
-          <div class="vs">VS</div>
-          <div class="pond-group"><span class="pond-label b">Pond B</span><select class="pond-select"><option>Pond 1 (Treated from Mar 1, 2026)</option><option>Pond 2 (Treated from Mar 5, 2026)</option><option>Pond 3</option><option selected>Pond 4</option><option>Pond 5</option><option>Pond 6</option></select></div>
+    <div class="main">
+      <!-- ===== DASHBOARD ===== -->
+      <div id="page-dash" class="page active">
+        <div class="pg-title">Dashboard</div>
+        <div class="pg-sub">Overview of all monitored environments</div>
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Overall Health</div>
+            <div class="stat-val">94.7%</div>
+            <div class="stat-extra good">All systems nominal</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:94.7%;background:var(--green)"></div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Active Alerts</div>
+            <div class="stat-val">00</div>
+            <div class="stat-extra good">No active alerts</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Avg Dissolved O2</div>
+            <div class="stat-val">7.4 <span style="font-size:14px;color:var(--gray)">mg/L</span></div>
+            <div class="stat-extra good">Within optimal range</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:82%;background:var(--teal)"></div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Sensor Uptime</div>
+            <div class="stat-val">100%</div>
+            <div class="stat-extra muted">All nodes synced</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--navy)"></div></div>
+          </div>
         </div>
-        <div class="live-bar">
-          <div class="live-dot"></div><span class="live-text">Live</span><span class="live-time" id="live-clock"></span>
-          <span style="margin-left:auto;font-size:11px;color:#9CA3AF">Updates every 1.5s</span>
+
+        <!-- Monitored Tanks -->
+        <div class="section-hdr">
+          <div class="section-title">Monitored Tanks</div>
+          <div class="section-actions">
+            <button class="btn-outline" onclick="">Sort by: Status</button>
+            <button class="btn-primary" onclick="">+ New Tank</button>
+          </div>
         </div>
-        <div class="metrics" id="rt-metrics"></div>
-        <div class="metrics" id="rt-metrics2"></div>
-        <div class="cgrid" id="rt-row1"></div>
-        <div class="cgrid" id="rt-row2"></div>
+
+        <!-- Table (desktop) -->
+        <div class="tank-table-wrap">
+        <table class="tank-table">
+          <thead><tr><th>Tank</th><th>Phase</th><th>pH Level</th><th>Dissolved O2</th><th>Temperature</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="tank-name">Pond Alpha-01</div></td>
+              <td><span class="tank-phase">Nursery Stage</span></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 7.2</div></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 8.1 mg/L</div></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 24.5 C</div></td>
+              <td><span class="badge stable">Stable</span></td>
+              <td><span class="details-link" onclick="go('pond')">Details</span></td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Beta-02</div></td>
+              <td><span class="tank-phase">Growth Phase A</span></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 7.4</div></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 7.8 mg/L</div></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 25.1 C</div></td>
+              <td><span class="badge stable">Stable</span></td>
+              <td><span class="details-link" onclick="go('pond')">Details</span></td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Gamma-03</div></td>
+              <td><span class="tank-phase">Nursery Stage</span></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 7.0</div></td>
+              <td><div class="param-row"><span class="param-dot warn"></span> 6.2 mg/L</div></td>
+              <td><div class="param-row"><span class="param-dot ok"></span> 26.3 C</div></td>
+              <td><span class="badge monitor">Monitoring</span></td>
+              <td><span class="details-link" onclick="go('pond')">Details</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <!-- Cards (mobile) -->
+        <div class="tank-cards">
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Alpha-01</div><div class="tc-phase">Nursery Stage</div></div><span class="badge stable">Stable</span></div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">pH</div><div class="tc-p-val">7.2</div></div>
+              <div class="tc-p"><div class="tc-p-label">DO</div><div class="tc-p-val">8.1 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Temp</div><div class="tc-p-val">24.5<span class="tc-p-unit">C</span></div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('pond')">Details</span></div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Beta-02</div><div class="tc-phase">Growth Phase A</div></div><span class="badge stable">Stable</span></div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">pH</div><div class="tc-p-val">7.4</div></div>
+              <div class="tc-p"><div class="tc-p-label">DO</div><div class="tc-p-val">7.8 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Temp</div><div class="tc-p-val">25.1<span class="tc-p-unit">C</span></div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('pond')">Details</span></div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Gamma-03</div><div class="tc-phase">Nursery Stage</div></div><span class="badge monitor">Monitoring</span></div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">pH</div><div class="tc-p-val">7.0</div></div>
+              <div class="tc-p"><div class="tc-p-label">DO</div><div class="tc-p-val">6.2 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Temp</div><div class="tc-p-val">26.3<span class="tc-p-unit">C</span></div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('pond')">Details</span></div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Logs -->
+        <div style="margin-top:20px">
+          <div class="section-hdr"><div class="section-title">Recent Activity</div></div>
+          <div class="logs">
+            <div class="log-item"><span class="log-dot success"></span><div><div class="log-text">BioBloc treatment applied to Pond Alpha-01</div><div class="log-meta">Treatment cycle 3 initiated - 1 hour ago</div></div></div>
+            <div class="log-item"><span class="log-dot warning"></span><div><div class="log-text">DO slightly below optimal in Pond Gamma-03</div><div class="log-meta">6.2 mg/L (optimal: 7.0+) - 2 hours ago</div></div></div>
+            <div class="log-item"><span class="log-dot info"></span><div><div class="log-text">Sensor data sync completed for all nodes</div><div class="log-meta">3 tanks, 9 sensors - 2 hours ago</div></div></div>
+            <div class="log-item"><span class="log-dot success"></span><div><div class="log-text">pH levels stabilized in Pond Gamma-03</div><div class="log-meta">7.0 (was 6.5) - 3 hours ago</div></div></div>
+            <div class="log-item"><span class="log-dot info"></span><div><div class="log-text">Weekly A/B comparison report generated</div><div class="log-meta">Pond Alpha-01 vs Pond Beta-02 - 5 hours ago</div></div></div>
+          </div>
+        </div>
       </div>
 
-      <div id="page-historical" class="page">
-        <div class="page-title">Historical Data</div>
-        <div class="page-sub">Compare pond performance over time</div>
-        <div class="pond-row">
-          <div class="pond-group"><span class="pond-label a">Pond A</span><select class="pond-select"><option selected>Pond 1 (Treated from Mar 1, 2026)</option><option>Pond 2 (Treated from Mar 5, 2026)</option><option>Pond 3</option><option>Pond 4</option><option>Pond 5</option><option>Pond 6</option></select></div>
-          <div class="vs">VS</div>
-          <div class="pond-group"><span class="pond-label b">Pond B</span><select class="pond-select"><option>Pond 1 (Treated from Mar 1, 2026)</option><option>Pond 2 (Treated from Mar 5, 2026)</option><option>Pond 3</option><option selected>Pond 4</option><option>Pond 5</option><option>Pond 6</option></select></div>
+      <!-- ===== A/B TESTING ===== -->
+      <div id="page-ab" class="page">
+        <div class="pg-title">A/B Comparison</div>
+        <div class="pg-sub">Compare treatment performance between two ponds</div>
+
+        <div class="ab-pond-row">
+          <div class="ab-pond"><span class="ab-label biobloc">Pond A</span><select class="ab-select"><option>Pond Alpha-01 (Treated from Mar 1, 2026)</option><option>Pond Beta-02 (Treated from Mar 5, 2026)</option><option>Pond Gamma-03</option><option>Pond Delta-04</option><option>Pond Echo-07</option></select></div>
+          <span class="ab-vs">VS</span>
+          <div class="ab-pond"><span class="ab-label ref">Pond B</span><select class="ab-select"><option>Pond Alpha-01 (Treated from Mar 1, 2026)</option><option>Pond Beta-02 (Treated from Mar 5, 2026)</option><option>Pond Gamma-03</option><option selected>Pond Delta-04</option><option>Pond Echo-07</option></select></div>
         </div>
-        <div class="hist-config">
-          <div class="cfg-group"><span class="cfg-label">Period</span><select class="cfg-select" id="hist-period"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></div>
-          <div class="cfg-group"><span class="cfg-label">Time unit</span><select class="cfg-select" id="hist-unit"><option value="daily">Daily</option><option value="weekly" selected>Weekly</option></select></div>
-          <button class="cfg-btn" onclick="renderHist()">Apply</button>
+
+        <div class="ab-config">
+          <div class="ab-dates">
+            <span class="ab-date-label">From</span>
+            <input type="date" class="ab-date" value="2026-02-27">
+            <span class="ab-date-label">To</span>
+            <input type="date" class="ab-date" value="2026-04-06">
+          </div>
+          <button class="ab-apply" onclick="renderAB()">Apply</button>
         </div>
-        <div class="metrics" id="h-metrics"></div>
-        <div class="metrics" id="h-metrics2"></div>
-        <div class="cgrid" id="h-row1"></div>
-        <div class="cgrid" id="h-row2"></div>
+
+        <div class="ab-metrics" id="ab-metrics1"></div>
+        <div class="ab-metrics" id="ab-metrics2"></div>
+        <div class="ab-charts" id="ab-row1"></div>
+        <div class="ab-charts" id="ab-row2"></div>
       </div>
 
-      <div id="page-digitaltwin" class="page">
-        <div class="page-title">Digital Twin</div>
-        <div class="page-sub">Real-time 3D pond visualization</div>
-        <div class="dt-placeholder">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5" style="margin-bottom:16px"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 8h2m4 0h4M7 12h10"/></svg>
-          <div class="dt-title">Digital Twin - Coming soon</div>
-          <div class="dt-sub">This feature is under discussion with stakeholders</div>
+      <!-- ===== TREATMENT EFFICIENCY ===== -->
+      <div id="page-eff" class="page">
+        <div class="pg-title">Treatment Efficiency</div>
+        <div class="pg-sub">Aggregated BioBloc performance across all treated tanks (normalized by treatment day)</div>
+        <div style="margin-bottom:18px"><button class="btn-primary" style="padding:8px 18px;font-size:12px">Download Full Efficiency Report</button></div>
+
+        <!-- Treatment overview stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Treated Tanks</div>
+            <div class="stat-val">3 <span style="font-size:14px;color:var(--gray)">of 3</span></div>
+            <div class="stat-extra muted">Alpha-01, Beta-02, Gamma-03</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Avg Days in Treatment</div>
+            <div class="stat-val">24</div>
+            <div class="stat-extra muted">Range: 5 - 36 days</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Overall Removal Efficiency</div>
+            <div class="stat-val" style="color:var(--green)">38.4%</div>
+            <div class="stat-extra good">Ammonium reduction (avg)</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:38.4%;background:var(--green)"></div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Treatment Status</div>
+            <div class="stat-val" style="color:var(--green);font-size:22px">All Active</div>
+            <div class="stat-extra good">No treatment interruptions</div>
+          </div>
+        </div>
+
+        <!-- Per-parameter efficiency -->
+        <div class="section-hdr"><div class="section-title">Parameter Efficiency (Before vs Current)</div></div>
+        <div class="pd-params" style="margin-bottom:20px">
+          <div class="pd-param">
+            <div class="pd-param-label">Ammonium Reduction</div>
+            <div class="pd-param-val" style="color:var(--green)">-38.4%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 2.12 mg/L</span><span>Current: 1.31 mg/L</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:38%;background:var(--green)"></div></div>
+            <div class="pd-param-status ok">Improving steadily</div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">DO Stability</div>
+            <div class="pd-param-val" style="color:var(--teal)">92.1%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 5.8 mg/L</span><span>Current: 6.7 mg/L</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:92%;background:var(--teal)"></div></div>
+            <div class="pd-param-status ok">Stable without extra aeration</div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">Turbidity Improvement</div>
+            <div class="pd-param-val" style="color:var(--accent)">-24.7%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 44.8 NTU</span><span>Current: 33.7 NTU</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:25%;background:var(--accent)"></div></div>
+            <div class="pd-param-status ok">Water clarity improving</div>
+          </div>
+        </div>
+
+        <!-- Aggregated trend chart -->
+        <div class="section-hdr"><div class="section-title">Ammonium Trend (Avg across treated tanks, by treatment day)</div></div>
+        <div class="abc" style="margin-bottom:16px">
+          <div class="abc-hdr">
+            <span class="abc-title">Average Ammonium Level Since Treatment Start</span>
+            <span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">By treatment day</span>
+          </div>
+          <div class="abc-wrap" style="height:200px"><canvas id="eff-c1"></canvas></div>
+          <div class="abc-legend"><span class="abc-lg"><span class="abc-line" style="background:var(--accent)"></span> Avg ammonium (treated tanks)</span></div>
+        </div>
+
+        <div class="section-hdr"><div class="section-title">DO Trend (Avg across treated tanks, by treatment day)</div></div>
+        <div class="abc" style="margin-bottom:20px">
+          <div class="abc-hdr">
+            <span class="abc-title">Average Dissolved Oxygen Since Treatment Start</span>
+            <span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">By treatment day</span>
+          </div>
+          <div class="abc-wrap" style="height:200px"><canvas id="eff-c2"></canvas></div>
+          <div class="abc-legend"><span class="abc-lg"><span class="abc-line" style="background:var(--teal)"></span> Avg dissolved oxygen (treated tanks)</span></div>
+        </div>
+
+        <!-- Individual pond treatment summary -->
+        <div class="section-hdr"><div class="section-title">Individual Tank Performance</div></div>
+        <div class="tank-table-wrap">
+        <table class="tank-table">
+          <thead><tr><th>Tank</th><th>Treatment Start</th><th>Days</th><th>NH4+ Before</th><th>NH4+ Current</th><th>Reduction</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="tank-name">Pond Alpha-01</div></td>
+              <td>Mar 1, 2026</td>
+              <td>36</td>
+              <td>2.10 mg/L</td>
+              <td style="color:var(--green);font-weight:600">1.22 mg/L</td>
+              <td style="color:var(--green);font-weight:600">-41.9%</td>
+              <td><span class="badge stable">On track</span></td>
+              <td><span class="details-link" onclick="go('effdet')">Details</span></td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Beta-02</div></td>
+              <td>Mar 5, 2026</td>
+              <td>32</td>
+              <td>2.18 mg/L</td>
+              <td style="color:var(--green);font-weight:600">1.35 mg/L</td>
+              <td style="color:var(--green);font-weight:600">-38.1%</td>
+              <td><span class="badge stable">On track</span></td>
+              <td><span class="details-link" onclick="go('effdet')">Details</span></td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Gamma-03</div></td>
+              <td>Apr 1, 2026</td>
+              <td>5</td>
+              <td>2.08 mg/L</td>
+              <td style="font-weight:600">1.82 mg/L</td>
+              <td style="color:var(--amber);font-weight:600">-12.5%</td>
+              <td><span class="badge monitor">Early stage</span></td>
+              <td><span class="details-link" onclick="go('effdet')">Details</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <!-- Mobile cards -->
+        <div class="tank-cards">
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Alpha-01</div><div class="tc-phase">Treated from Mar 1 (36 days)</div></div><span class="badge stable">On track</span></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Ammonium (NH4+)</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">2.10 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Current</div><div class="tc-p-val" style="color:var(--green)">1.22 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Reduction</div><div class="tc-p-val" style="color:var(--green)">-41.9%</div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('effdet')">Details</span></div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Beta-02</div><div class="tc-phase">Treated from Mar 5 (32 days)</div></div><span class="badge stable">On track</span></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Ammonium (NH4+)</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">2.18 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Current</div><div class="tc-p-val" style="color:var(--green)">1.35 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Reduction</div><div class="tc-p-val" style="color:var(--green)">-38.1%</div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('effdet')">Details</span></div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Gamma-03</div><div class="tc-phase">Treated from Apr 1 (5 days)</div></div><span class="badge monitor">Early stage</span></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Ammonium (NH4+)</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">2.08 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Current</div><div class="tc-p-val">1.82 <span class="tc-p-unit">mg/L</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Reduction</div><div class="tc-p-val" style="color:var(--amber)">-12.5%</div></div>
+            </div>
+            <div class="tc-footer"><span class="details-link" onclick="go('effdet')">Details</span></div>
+          </div>
         </div>
       </div>
+
+      <!-- ===== EFFICIENCY DETAIL ===== -->
+      <div id="page-effdet" class="page">
+        <div class="pd-back" onclick="go('eff')">&#8592; Back to Treatment Efficiency</div>
+
+        <!-- Section 1: Tank header -->
+        <div class="pd-header">
+          <div class="pd-title-wrap">
+            <div class="pd-name" id="ed-name">Pond Alpha-01</div>
+            <div class="pd-phase">Treatment started Mar 1, 2026</div>
+            <div class="pd-badge-row">
+              <span class="badge stable">On track</span>
+              <span style="font-size:11px;color:var(--gray);margin-left:8px">36 days in treatment</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pd-treatment">
+          <span class="pd-treatment-dot"></span>
+          <span class="pd-treatment-text">BioBloc treatment active since <span class="pd-treatment-date">Mar 1, 2026</span> (36 days ago)</span>
+        </div>
+
+        <!-- Section 2: Per-parameter efficiency for this tank -->
+        <div class="section-hdr"><div class="section-title">Treatment Performance</div></div>
+        <div class="pd-params" style="margin-bottom:20px">
+          <div class="pd-param">
+            <div class="pd-param-label">Ammonium (NH4+)</div>
+            <div class="pd-param-val" style="color:var(--green)">-41.9%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 2.10 mg/L</span><span>Current: 1.22 mg/L</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:42%;background:var(--green)"></div></div>
+            <div class="pd-param-status ok">Strong reduction</div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">DO Stability</div>
+            <div class="pd-param-val" style="color:var(--teal)">94.3%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 5.7 mg/L</span><span>Current: 7.1 mg/L</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:94%;background:var(--teal)"></div></div>
+            <div class="pd-param-status ok">Consistently above optimal</div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">Turbidity Improvement</div>
+            <div class="pd-param-val" style="color:var(--accent)">-28.3%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--gray)">
+              <span>Before: 46.2 NTU</span><span>Current: 33.1 NTU</span>
+            </div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:28%;background:var(--accent)"></div></div>
+            <div class="pd-param-status ok">Water clarity improving</div>
+          </div>
+        </div>
+
+        <!-- Section 3: This tank's treatment trend charts -->
+        <div class="section-hdr"><div class="section-title">Treatment Trend (Day 1 to Current)</div></div>
+        <div class="ed-charts-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+          <div class="abc">
+            <div class="abc-hdr">
+              <span class="abc-title">Ammonium (NH4+)</span>
+              <span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">By treatment day</span>
+            </div>
+            <div class="abc-wrap" style="height:180px"><canvas id="ed-c1"></canvas></div>
+            <div class="abc-legend"><span class="abc-lg"><span class="abc-line" style="background:var(--accent)"></span> Ammonium level</span></div>
+          </div>
+          <div class="abc">
+            <div class="abc-hdr">
+              <span class="abc-title">Dissolved Oxygen</span>
+              <span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">By treatment day</span>
+            </div>
+            <div class="abc-wrap" style="height:180px"><canvas id="ed-c2"></canvas></div>
+            <div class="abc-legend"><span class="abc-lg"><span class="abc-line" style="background:var(--teal)"></span> DO level</span></div>
+          </div>
+        </div>
+
+        <!-- Section 4: Treatment milestones -->
+        <div class="section-hdr"><div class="section-title">Treatment Milestones</div></div>
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:20px">
+          <div class="ed-timeline">
+            <div class="ed-item done">
+              <div class="ed-item-day">Day 1 - Mar 1, 2026</div>
+              <div class="ed-item-text">Treatment started</div>
+              <div class="ed-item-sub">BioBloc applied to Pond Alpha-01. Initial ammonium: 2.10 mg/L</div>
+            </div>
+            <div class="ed-item done">
+              <div class="ed-item-day">Day 5 - Mar 5, 2026</div>
+              <div class="ed-item-text">First measurable NH4+ reduction detected</div>
+              <div class="ed-item-sub">Ammonium dropped to 1.98 mg/L (-5.7%). Biological process initiating.</div>
+            </div>
+            <div class="ed-item done">
+              <div class="ed-item-day">Day 14 - Mar 14, 2026</div>
+              <div class="ed-item-text">20% reduction milestone reached</div>
+              <div class="ed-item-sub">Ammonium at 1.68 mg/L (-20%). DO stabilized at 6.5 mg/L without additional aeration.</div>
+            </div>
+            <div class="ed-item done">
+              <div class="ed-item-day">Day 21 - Mar 21, 2026</div>
+              <div class="ed-item-text">Turbidity improvement observed</div>
+              <div class="ed-item-sub">Water clarity improved by 18%. Turbidity dropped from 46.2 to 37.9 NTU.</div>
+            </div>
+            <div class="ed-item active">
+              <div class="ed-item-day">Day 36 - Apr 6, 2026 (Today)</div>
+              <div class="ed-item-text">41.9% ammonium reduction achieved</div>
+              <div class="ed-item-sub">Current: 1.22 mg/L. DO stable at 7.1 mg/L. Treatment progressing well.</div>
+            </div>
+            <div class="ed-item future">
+              <div class="ed-item-day">Day 60 - Apr 30, 2026 (Projected)</div>
+              <div class="ed-item-text">Target: 50% reduction</div>
+              <div class="ed-item-sub">At current rate, projected to reach 0.95 mg/L ammonium by Day 60.</div>
+            </div>
+            <div class="ed-item future">
+              <div class="ed-item-day">Day 90 - May 30, 2026 (Projected)</div>
+              <div class="ed-item-text">Target: Stabilization phase</div>
+              <div class="ed-item-sub">Expected to stabilize below 0.80 mg/L. Full treatment cycle evaluation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== FINANCIAL PERFORMANCE ===== -->
+      <div id="page-fin" class="page">
+        <div class="pg-title">Financial Performance</div>
+        <div class="pg-sub">BioBloc cost savings and ROI across all treated tanks (normalized by treatment day)</div>
+        <div style="margin-bottom:18px"><button class="btn-primary" style="padding:8px 18px;font-size:12px">Download Full Financial Report</button></div>
+
+        <!-- Context stats -->
+        <div class="stats" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px">
+          <div class="stat">
+            <div class="stat-label">Treated Tanks</div>
+            <div class="stat-val">3 <span style="font-size:14px;color:var(--gray)">of 3</span></div>
+            <div class="stat-extra muted">Alpha-01, Beta-02, Gamma-03</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Avg Days in Treatment</div>
+            <div class="stat-val">24</div>
+            <div class="stat-extra muted">Range: 5 - 36 days</div>
+          </div>
+        </div>
+
+        <!-- Financial stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Total Electricity Saved</div>
+            <div class="stat-val" style="color:var(--green)">$2,840</div>
+            <div class="stat-extra good">Since first treatment (36 days)</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Current Monthly Savings</div>
+            <div class="stat-val" style="color:var(--green)">$1,420</div>
+            <div class="stat-extra good">Across 3 treated tanks</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Estimated ROI</div>
+            <div class="stat-val" style="color:var(--teal)">142%</div>
+            <div class="stat-extra muted">Savings vs BioBloc treatment cost</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--teal)"></div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Payback Period</div>
+            <div class="stat-val">2.1 <span style="font-size:14px;color:var(--gray)">months</span></div>
+            <div class="stat-extra good">Investment recovered</div>
+          </div>
+        </div>
+
+        <!-- Section 2: Electricity cost trend -->
+        <div class="section-hdr"><div class="section-title">Electricity Cost Trend (Avg across treated tanks, by treatment day)</div></div>
+        <div class="abc" style="margin-bottom:16px">
+          <div class="abc-hdr">
+            <span class="abc-title">Average Electricity Cost: Before vs After BioBloc</span>
+            <span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">By treatment day</span>
+          </div>
+          <div class="abc-wrap" style="height:200px"><canvas id="fin-c1"></canvas></div>
+          <div class="abc-legend">
+            <span class="abc-lg"><span class="abc-line" style="background:#9ca3af"></span> Before BioBloc (baseline)</span>
+            <span class="abc-lg"><span class="abc-line" style="background:var(--green)"></span> After BioBloc (actual)</span>
+          </div>
+        </div>
+
+        <!-- Section 3: Per-tank financial summary -->
+        <div class="section-hdr"><div class="section-title">Per-Tank Savings Breakdown</div></div>
+        <div class="tank-table-wrap">
+        <table class="tank-table">
+          <thead><tr><th>Tank</th><th>Treatment Start</th><th>Days</th><th>kWh Before</th><th>kWh After</th><th>Monthly Saving</th><th>Total Saved</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="tank-name">Pond Alpha-01</div></td>
+              <td>Mar 1, 2026</td>
+              <td>36</td>
+              <td>25.3 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">18.1 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">$580/mo</td>
+              <td style="color:var(--green);font-weight:600">$1,240</td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Beta-02</div></td>
+              <td>Mar 5, 2026</td>
+              <td>32</td>
+              <td>24.8 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">17.5 kWh/day</td>
+              <td style="color:var(--green);font-weight:600">$520/mo</td>
+              <td style="color:var(--green);font-weight:600">$980</td>
+            </tr>
+            <tr>
+              <td><div class="tank-name">Pond Gamma-03</div></td>
+              <td>Apr 1, 2026</td>
+              <td>5</td>
+              <td>26.1 kWh/day</td>
+              <td style="font-weight:600">23.4 kWh/day</td>
+              <td style="color:var(--amber);font-weight:600">$320/mo</td>
+              <td style="font-weight:600">$620</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <!-- Mobile cards -->
+        <div class="tank-cards">
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Alpha-01</div><div class="tc-phase">Treated from Mar 1 (36 days)</div></div></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">25.3 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val" style="color:var(--green)">18.1 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--green)">$1,240</div></div>
+            </div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Beta-02</div><div class="tc-phase">Treated from Mar 5 (32 days)</div></div></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">24.8 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val" style="color:var(--green)">17.5 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--green)">$980</div></div>
+            </div>
+          </div>
+          <div class="tank-card">
+            <div class="tc-top"><div><div class="tc-name">Pond Gamma-03</div><div class="tc-phase">Treated from Apr 1 (5 days)</div></div></div>
+            <div style="font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Electricity Savings</div>
+            <div class="tc-params">
+              <div class="tc-p"><div class="tc-p-label">Before</div><div class="tc-p-val">26.1 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">After</div><div class="tc-p-val">23.4 <span class="tc-p-unit">kWh/d</span></div></div>
+              <div class="tc-p"><div class="tc-p-label">Saved</div><div class="tc-p-val" style="color:var(--amber)">$620</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== POND DETAIL ===== -->
+      <div id="page-pond" class="page">
+        <div class="pd-back" onclick="go('dash')">&#8592; Back to Dashboard</div>
+
+        <div class="pd-header">
+          <div class="pd-title-wrap">
+            <div class="pd-name" id="pd-name">Pond Alpha-01</div>
+            <div class="pd-phase" id="pd-phase">Nursery Stage</div>
+            <div class="pd-badge-row">
+              <span class="badge stable" id="pd-status">Stable</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pd-treatment" id="pd-treatment">
+          <span class="pd-treatment-dot"></span>
+          <span class="pd-treatment-text">BioBloc treatment active since <span class="pd-treatment-date">Mar 1, 2026</span> (36 days ago)</span>
+        </div>
+
+        <div class="pd-params">
+          <div class="pd-param">
+            <div class="pd-param-label">pH Level</div>
+            <div class="pd-param-val">7.2</div>
+            <div class="pd-param-status ok">Stable</div>
+            <div class="pd-param-range">Optimal: 7.0 - 8.5</div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:72%;background:var(--green)"></div></div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">Dissolved Oxygen</div>
+            <div class="pd-param-val">8.1 <span class="pd-param-unit">mg/L</span></div>
+            <div class="pd-param-status ok">+0.3 from 1h ago</div>
+            <div class="pd-param-range">Optimal: 5.0 - 9.0</div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:85%;background:var(--green)"></div></div>
+          </div>
+          <div class="pd-param">
+            <div class="pd-param-label">Temperature</div>
+            <div class="pd-param-val">24.5 <span class="pd-param-unit">C</span></div>
+            <div class="pd-param-status ok">Stable</div>
+            <div class="pd-param-range">Optimal: 22.0 - 28.0</div>
+            <div class="pd-param-bar"><div class="pd-param-bar-fill" style="width:60%;background:var(--teal)"></div></div>
+          </div>
+        </div>
+
+        <div class="pd-grid">
+          <div class="pd-info">
+            <div class="pd-info-title">Pond Information</div>
+            <div class="pd-info-row"><span class="pd-info-label">Company</span><span class="pd-info-val">Pacific Aquaculture Co.</span></div>
+            <div class="pd-info-row"><span class="pd-info-label">GPS Location</span><span class="pd-info-val">1.3521 N, 103.8198 E</span></div>
+            <div class="pd-info-row"><span class="pd-info-label">Biomass</span><span class="pd-info-val">920 kg</span></div>
+            <div class="pd-info-row"><span class="pd-info-label">Growth Rate</span><span class="pd-info-val" style="color:var(--green)">1.1%/day</span></div>
+            <div class="pd-info-row"><span class="pd-info-label">Sensors Active</span><span class="pd-info-val">3 / 3</span></div>
+            <div class="pd-info-row"><span class="pd-info-label">Last Reading</span><span class="pd-info-val">2 mins ago</span></div>
+          </div>
+          <div class="pd-tank-icon">
+            <div style="font-size:48px">&#x1F41F;</div>
+            <div class="pd-tank-type">Fish Tank</div>
+            <div style="font-size:10px;color:var(--gray);text-align:center">Pond Alpha-01<br>Nursery Stage</div>
+          </div>
+        </div>
+
+        <div class="section-hdr"><div class="section-title">Alert History</div></div>
+        <div class="pd-alerts">
+          <div class="pd-alert-item"><span class="pd-alert-dot" style="background:var(--amber)"></span><div><div class="pd-alert-text">pH level approaching lower threshold</div><div class="pd-alert-meta">6.9 (min: 7.0) - Yesterday, 16:20</div></div></div>
+          <div class="pd-alert-item"><span class="pd-alert-dot" style="background:var(--green)"></span><div><div class="pd-alert-text">pH level returned to normal range</div><div class="pd-alert-meta">7.1 - Yesterday, 18:45</div></div></div>
+          <div class="pd-alert-item"><span class="pd-alert-dot" style="background:var(--red)"></span><div><div class="pd-alert-text">DO dropped below minimum threshold</div><div class="pd-alert-meta">4.8 mg/L (min: 5.0) - Mar 28, 09:10</div></div></div>
+          <div class="pd-alert-item"><span class="pd-alert-dot" style="background:var(--green)"></span><div><div class="pd-alert-text">DO recovered to safe levels</div><div class="pd-alert-meta">5.3 mg/L - Mar 28, 11:30</div></div></div>
+        </div>
+
+        <div class="section-hdr" style="margin-top:20px">
+          <div class="section-title">Activity Log</div>
+          <div class="section-actions">
+            <button class="btn-outline log-filter active" onclick="filterLog('all',this)">All</button>
+            <button class="btn-outline log-filter" onclick="filterLog('sensor',this)">Sensor</button>
+            <button class="btn-outline log-filter" onclick="filterLog('manual',this)">Manual</button>
+            <button class="btn-primary">+ Manual Log</button>
+          </div>
+        </div>
+        <table class="pd-log-table" id="pd-log-table">
+          <thead><tr><th>Timestamp</th><th>Metric</th><th>Value</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr data-src="sensor"><td>Today, 14:30:15</td><td><span class="pd-log-metric">pH Level</span></td><td>7.2</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:30:15</td><td><span class="pd-log-metric">Dissolved O2</span></td><td>8.1 mg/L</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:30:15</td><td><span class="pd-log-metric">Temperature</span></td><td>24.5 C</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:30:00</td><td><span class="pd-log-metric">pH Level</span></td><td>7.2</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:30:00</td><td><span class="pd-log-metric">Dissolved O2</span></td><td>8.0 mg/L</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:30:00</td><td><span class="pd-log-metric">Temperature</span></td><td>24.5 C</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:45</td><td><span class="pd-log-metric">pH Level</span></td><td>7.1</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:45</td><td><span class="pd-log-metric">Dissolved O2</span></td><td>7.9 mg/L</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:45</td><td><span class="pd-log-metric">Temperature</span></td><td>24.4 C</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="manual"><td>Today, 12:00:00</td><td><span class="pd-log-metric">Ammonia</span></td><td>0.08 mg/L</td><td><span class="pd-log-manual">Manual</span></td></tr>
+            <tr data-src="manual"><td>Today, 12:00:00</td><td><span class="pd-log-metric">Nitrite</span></td><td>0.12 mg/L</td><td><span class="pd-log-manual">Manual</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:30</td><td><span class="pd-log-metric">pH Level</span></td><td>7.1</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:30</td><td><span class="pd-log-metric">Dissolved O2</span></td><td>7.8 mg/L</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="sensor"><td>Today, 14:29:30</td><td><span class="pd-log-metric">Temperature</span></td><td>24.4 C</td><td><span class="pd-log-auto">Sensor</span></td></tr>
+            <tr data-src="manual"><td>Yesterday, 14:00:00</td><td><span class="pd-log-metric">Bacteria Count</span></td><td>1,240 CFU/mL</td><td><span class="pd-log-manual">Manual</span></td></tr>
+            <tr data-src="manual"><td>Yesterday, 14:00:00</td><td><span class="pd-log-metric">Vibrio Count</span></td><td>85 CFU/mL</td><td><span class="pd-log-manual">Manual</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav (mobile) -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="bnav active" onclick="go('dash')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="bnav" onclick="go('ab')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M8 3H3v5M16 21h5v-5M8 21H3v-5"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="3" x2="10" y2="10"/><line x1="21" y1="21" x2="14" y2="14"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        A/B Compare
+      </button>
+      <button class="bnav" onclick="go('eff')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Efficiency
+      </button>
+      <button class="bnav" onclick="go('fin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Finance
+      </button>
     </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-var T='#0D9488',G='#9CA3AF';
+var BL='#1e40af',GR='#9ca3af',NV='#0F2B3C';
 var P=[
   {n:'Ammonium',u:'mg/L',tb:2.1,cb:2.1,td:-.03,cd:0,ns:.15},
   {n:'Dissolved O2',u:'mg/L',tb:5.8,cb:5.8,td:.02,cd:0,ns:.3},
@@ -158,109 +958,154 @@ var P=[
 ];
 function sd(s){var x=Math.sin(s)*10000;return x-Math.floor(x)}
 function rv(b,n,s){return Math.round((b+sd(s)*n-n/2)*100)/100}
+var AC={};
+var EFC={};
+var EDC={};
+var FNC={};
 
-var RC={},RD,RS=0,HC={};
-
-function switchTab(t){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
-  document.querySelectorAll('.nav-item:not(.disabled)').forEach(function(n){n.classList.remove('active')});
-  document.getElementById('page-'+t).classList.add('active');
-  var ns=document.querySelectorAll('.nav-item');
-  if(t==='realtime')ns[0].classList.add('active');
-  if(t==='historical'){ns[1].classList.add('active');if(!HC.c0)renderHist();}
+function go(p){
+  document.querySelectorAll('.page').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.snav').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.bnav').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('page-'+p).classList.add('active');
+  var navMap={dash:0,ab:1,eff:2,effdet:2,fin:3,pond:0};
+  var idx=navMap[p]||0;
+  if(document.querySelectorAll('.snav')[idx])document.querySelectorAll('.snav')[idx].classList.add('active');
+  if(document.querySelectorAll('.bnav')[idx])document.querySelectorAll('.bnav')[idx].classList.add('active');
+  if(p==='ab'&&!AC.c0)renderAB();
+  if(p==='eff'&&!EFC.c1)renderEff();
+  if(p==='effdet'&&!EDC.c1)renderEffDet();
+  if(p==='fin'&&!FNC.c1)renderFin();
+  window.scrollTo(0,0);
 }
 
-function pct(a,b){
+function filterLog(type,btn){
+  document.querySelectorAll('.log-filter').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  var rows=document.querySelectorAll('#pd-log-table tbody tr');
+  rows.forEach(function(r){
+    if(type==='all'){r.style.display='';}
+    else{r.style.display=r.getAttribute('data-src')===type?'':'none';}
+  });
+}
+
+function pctAB(a,b){
   if(b===0)return{t:'--',c:'nt'};
   var d=Math.round(((a-b)/b)*100);
-  if(d<0)return{t:'v '+Math.abs(d)+'% vs Pond B',c:'up'};
-  if(d>0)return{t:'^ '+d+'% vs Pond B',c:'up'};
+  if(d<0)return{t:'v '+Math.abs(d)+'% lower',c:'up'};
+  if(d>0)return{t:'^ '+d+'% higher',c:'up'};
   return{t:'No change',c:'nt'};
 }
 
-function mk(id1,id2,tv,cv){
+function mkAB(id1,id2,tv,cv){
   var a='',b='';
   P.forEach(function(p,i){
-    var d=pct(tv[i],cv[i]);
-    var row='<div class="mc t"><div class="mc-label">'+p.n+' (Pond A)</div><div class="mc-val tl">'+tv[i]+' <span class="mc-unit">'+p.u+'</span></div><div class="mc-chg '+d.c+'">'+d.t+'</div></div>'+
-            '<div class="mc c"><div class="mc-label">'+p.n+' (Pond B)</div><div class="mc-val dk">'+cv[i]+' <span class="mc-unit">'+p.u+'</span></div><div class="mc-chg nt">Baseline</div></div>';
+    var d=pctAB(tv[i],cv[i]);
+    var row='<div class="abm bio"><div class="abm-label">'+p.n+' (Pond Alpha-01)</div><div class="abm-val bl">'+tv[i]+' <span class="abm-unit">'+p.u+'</span></div><div class="abm-chg '+(d.c==='nt'?'nt':'')+'">'+d.t+'</div></div>'+
+            '<div class="abm ref"><div class="abm-label">'+p.n+' (Pond Delta-04)</div><div class="abm-val dk">'+cv[i]+' <span class="abm-unit">'+p.u+'</span></div><div class="abm-chg nt">Baseline</div></div>';
     if(i<2)a+=row;else b+=row;
   });
   document.getElementById(id1).innerHTML=a;
   document.getElementById(id2).innerHTML=b;
 }
 
-function mch(id,lb,da,db,tp){
+function mcAB(id,lb,da,db,tp){
   var el=document.getElementById(id);if(!el)return null;
-  var o={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10,titleFont:{size:11},bodyFont:{size:12}}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF',maxTicksLimit:8},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF'},grid:{color:'#F3F4F6'},border:{display:false}}},animation:{duration:200}};
-  if(tp==='bar'){o.barPercentage=.7;o.categoryPercentage=.7;return new Chart(el,{type:'bar',data:{labels:lb,datasets:[{label:'Pond B',data:db,backgroundColor:'rgba(156,163,175,0.5)',borderRadius:4},{label:'Pond A',data:da,backgroundColor:'rgba(13,148,136,0.7)',borderRadius:4}]},options:o})}
+  var o={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10,titleFont:{size:11},bodyFont:{size:12}}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF',maxTicksLimit:8},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF'},grid:{color:'#f0f2f5'},border:{display:false}}},animation:{duration:300}};
+  if(tp==='bar'){o.barPercentage=.7;o.categoryPercentage=.7;return new Chart(el,{type:'bar',data:{labels:lb,datasets:[{label:'Pond Delta-04',data:db,backgroundColor:'rgba(156,163,175,0.45)',borderRadius:4},{label:'Pond Alpha-01',data:da,backgroundColor:'rgba(30,64,175,0.6)',borderRadius:4}]},options:o})}
   o.elements={point:{radius:0,hoverRadius:4},line:{tension:.3}};
-  return new Chart(el,{type:'line',data:{labels:lb,datasets:[{label:'Pond B',data:db,borderColor:G,borderWidth:2,fill:false},{label:'Pond A',data:da,borderColor:T,borderWidth:2,fill:false}]},options:o});
+  return new Chart(el,{type:'line',data:{labels:lb,datasets:[{label:'Pond Delta-04',data:db,borderColor:GR,borderWidth:2,fill:false},{label:'Pond Alpha-01',data:da,borderColor:BL,borderWidth:2,fill:false}]},options:o});
 }
 
-function cards(r1,r2,pf,badges){
-  var ti=[{n:'Ammonium (NH4+) comparison',tp:'line'},{n:'Dissolved oxygen (DO) comparison',tp:'line'},{n:'Turbidity (NTU) comparison',tp:'line'},{n:'Electricity consumption (kWh)',tp:'bar'}];
-  var a='',b='';
-  ti.forEach(function(t,i){
-    var c='<div class="cc"><div class="cc-hdr"><span class="cc-title">'+t.n+'</span><span class="cc-badge">'+badges[i]+'</span></div><div class="cc-wrap"><canvas id="'+pf+'-c'+i+'"></canvas></div><div class="cc-legend"><span class="lg-item"><span class="'+(t.tp==='bar'?'lg-rect':'lg-line')+'" style="background:'+T+';opacity:'+(t.tp==='bar'?.7:1)+'"></span> Pond A</span><span class="lg-item"><span class="'+(t.tp==='bar'?'lg-rect':'lg-line')+'" style="background:'+G+';opacity:'+(t.tp==='bar'?.5:1)+'"></span> Pond B</span></div></div>';
-    if(i<2)a+=c;else b+=c;
-  });
-  document.getElementById(r1).innerHTML=a;
-  document.getElementById(r2).innerHTML=b;
-}
-
-function initRT(){
-  var N=25;RD={l:[],s:P.map(function(){return{a:[],b:[]}})};
-  for(var i=0;i<N;i++){
-    var t=new Date(Date.now()-(N-i)*1500);
-    RD.l.push(t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}));
-    P.forEach(function(p,j){RD.s[j].a.push(rv(p.tb+p.td*i,p.ns,i*7+j));RD.s[j].b.push(rv(p.cb+p.cd*i,p.ns,i*13+j));});
+function renderAB(){
+  var from=document.querySelectorAll('.ab-date')[0].value;
+  var to=document.querySelectorAll('.ab-date')[1].value;
+  var d1=new Date(from),d2=new Date(to);
+  var days=Math.max(7,Math.round((d2-d1)/(1000*60*60*24)));
+  var useWeekly=days>14;
+  var st=useWeekly?Math.ceil(days/7):days;
+  var lb=[];
+  for(var i=0;i<st;i++){
+    if(useWeekly){var wd=new Date(d1.getTime()+i*7*86400000);lb.push(wd.toLocaleDateString([],{month:'short',day:'numeric'}));}
+    else{var dd=new Date(d1.getTime()+i*86400000);lb.push(dd.toLocaleDateString([],{month:'short',day:'numeric'}));}
   }
-  RS=N;
-  cards('rt-row1','rt-row2','rt',['Live','Live','Live','Live']);
-  P.forEach(function(p,i){RC['c'+i]=mch('rt-c'+i,RD.l,RD.s[i].a,RD.s[i].b,i===3?'bar':'line');});
-  updM();updC();
-}
-
-function updM(){
-  var tv=P.map(function(_,i){return RD.s[i].a[RD.s[i].a.length-1]});
-  var cv=P.map(function(_,i){return RD.s[i].b[RD.s[i].b.length-1]});
-  mk('rt-metrics','rt-metrics2',tv,cv);
-}
-function updC(){document.getElementById('live-clock').textContent='Last updated: '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-
-function tick(){
-  var now=new Date();
-  RD.l.push(now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}));RD.l.shift();
-  P.forEach(function(p,i){
-    var prev=RD.s[i].a[RD.s[i].a.length-1];
-    var prevB=RD.s[i].b[RD.s[i].b.length-1];
-    RD.s[i].a.push(Math.round((prev+(Math.random()-.52)*p.ns*.4)*100)/100);RD.s[i].a.shift();
-    RD.s[i].b.push(Math.round((prevB+(Math.random()-.5)*p.ns*.4)*100)/100);RD.s[i].b.shift();
-    var ch=RC['c'+i];if(ch){ch.data.labels=RD.l;ch.data.datasets[0].data=RD.s[i].b;ch.data.datasets[1].data=RD.s[i].a;ch.update('none');}
-  });
-  RS++;updM();updC();
-}
-
-function renderHist(){
-  var pr=parseInt(document.getElementById('hist-period').value);
-  var un=document.getElementById('hist-unit').value;
-  var st=un==='weekly'?Math.ceil(pr/7):pr;
-  var lb=[];for(var i=0;i<st;i++){lb.push(un==='weekly'?'Week '+(i+1):'Day '+(i+1));}
   var ss=P.map(function(p,j){
     var a=[],b=[];
-    for(var i=0;i<st;i++){var sc=un==='weekly'?7:1;a.push(rv(p.tb+p.td*i*sc,p.ns*1.5,i*7+j+99));b.push(rv(p.cb+p.cd*i*sc,p.ns*1.5,i*13+j+99));}
+    for(var i=0;i<st;i++){var sc=useWeekly?7:1;a.push(rv(p.tb+p.td*i*sc,p.ns*1.5,i*7+j+99));b.push(rv(p.cb+p.cd*i*sc,p.ns*1.5,i*13+j+99));}
     return{a:a,b:b};
   });
   var tv=P.map(function(_,i){return ss[i].a[ss[i].a.length-1]});
   var cv=P.map(function(_,i){return ss[i].b[ss[i].b.length-1]});
-  mk('h-metrics','h-metrics2',tv,cv);
-  Object.values(HC).forEach(function(c){if(c)c.destroy()});HC={};
-  var bd=un==='weekly'?'Weekly':'Daily';
-  cards('h-row1','h-row2','h',[bd,bd,bd,bd]);
-  P.forEach(function(p,i){HC['c'+i]=mch('h-c'+i,lb,ss[i].a,ss[i].b,i===3?'bar':'line');});
+  mkAB('ab-metrics1','ab-metrics2',tv,cv);
+
+  Object.values(AC).forEach(function(c){if(c)c.destroy()});AC={};
+  var bd=useWeekly?'Weekly':'Daily';
+  var ti=[{n:'Ammonium (NH4+)',tp:'line'},{n:'Dissolved Oxygen (DO)',tp:'line'},{n:'Turbidity (NTU)',tp:'line'},{n:'Electricity (kWh)',tp:'bar'}];
+  var h1='',h2='';
+  ti.forEach(function(t,i){
+    var c='<div class="abc"><div class="abc-hdr"><span class="abc-title">'+t.n+'</span><span style="font-size:9px;color:var(--navy);background:var(--lt);padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase">'+bd+'</span></div><div class="abc-wrap"><canvas id="ab-c'+i+'"></canvas></div><div class="abc-legend"><span class="abc-lg"><span class="'+(t.tp==='bar'?'abc-rect':'abc-line')+'" style="background:'+BL+';opacity:'+(t.tp==='bar'?.6:1)+'"></span> Pond Alpha-01</span><span class="abc-lg"><span class="'+(t.tp==='bar'?'abc-rect':'abc-line')+'" style="background:'+GR+';opacity:'+(t.tp==='bar'?.45:1)+'"></span> Pond Delta-04</span></div></div>';
+    if(i<2)h1+=c;else h2+=c;
+  });
+  document.getElementById('ab-row1').innerHTML=h1;
+  document.getElementById('ab-row2').innerHTML=h2;
+  P.forEach(function(p,i){AC['c'+i]=mcAB('ab-c'+i,lb,ss[i].a,ss[i].b,i===3?'bar':'line');});
 }
 
-initRT();
-setInterval(tick,1500);
+function renderEff(){
+  var days=24;
+  var lb=[];for(var i=0;i<days;i++){lb.push('Day '+(i+1));}
+  var nh4=[];var doV=[];
+  for(var i=0;i<days;i++){
+    nh4.push(Math.round((2.12-i*0.025+sd(i*7)*0.08)*100)/100);
+    doV.push(Math.round((5.8+i*0.025+sd(i*11)*0.15)*100)/100);
+  }
+  var co={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF',maxTicksLimit:8},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF'},grid:{color:'#f0f2f5'},border:{display:false}}},elements:{point:{radius:0,hoverRadius:4},line:{tension:.3}}};
+  var e1=document.getElementById('eff-c1');
+  if(e1)EFC.c1=new Chart(e1,{type:'line',data:{labels:lb,datasets:[{label:'Avg Ammonium',data:nh4,borderColor:'#2563EB',borderWidth:2,fill:true,backgroundColor:'rgba(37,99,235,0.08)'}]},options:co});
+  var e2=document.getElementById('eff-c2');
+  if(e2)EFC.c2=new Chart(e2,{type:'line',data:{labels:lb,datasets:[{label:'Avg DO',data:doV,borderColor:'#0D9488',borderWidth:2,fill:true,backgroundColor:'rgba(13,148,136,0.08)'}]},options:co});
+}
+
+function renderEffDet(){
+  var days=36;
+  var lb=[];for(var i=0;i<days;i++){lb.push('Day '+(i+1));}
+  var nh4=[];var doV=[];
+  for(var i=0;i<days;i++){
+    nh4.push(Math.round((2.10-i*0.0245+sd(i*9)*0.06)*100)/100);
+    doV.push(Math.round((5.7+i*0.04+sd(i*13)*0.12)*100)/100);
+  }
+  var co={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF',maxTicksLimit:8},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF'},grid:{color:'#f0f2f5'},border:{display:false}}},elements:{point:{radius:2,hoverRadius:5},line:{tension:.3}}};
+  var d1=document.getElementById('ed-c1');
+  if(d1)EDC.c1=new Chart(d1,{type:'line',data:{labels:lb,datasets:[{label:'Ammonium',data:nh4,borderColor:'#2563EB',borderWidth:2,fill:true,backgroundColor:'rgba(37,99,235,0.08)',pointBackgroundColor:'#2563EB'}]},options:co});
+  var d2=document.getElementById('ed-c2');
+  if(d2)EDC.c2=new Chart(d2,{type:'line',data:{labels:lb,datasets:[{label:'Dissolved Oxygen',data:doV,borderColor:'#0D9488',borderWidth:2,fill:true,backgroundColor:'rgba(13,148,136,0.08)',pointBackgroundColor:'#0D9488'}]},options:co});
+}
+
+function renderFin(){
+  // Chart 1: Electricity cost before vs after (by treatment day)
+  var days=24;
+  var lb1=[];var before=[];var after=[];
+  for(var i=0;i<days;i++){
+    lb1.push('Day '+(i+1));
+    before.push(Math.round((25.0+sd(i*5)*2)*100)/100);
+    after.push(Math.round((25.0-i*0.28+sd(i*7)*1.5)*100)/100);
+  }
+  var co={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF',maxTicksLimit:8},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF',callback:function(v){return'$'+v}},grid:{color:'#f0f2f5'},border:{display:false}}},elements:{point:{radius:0,hoverRadius:4},line:{tension:.3}}};
+  var f1=document.getElementById('fin-c1');
+  if(f1)FNC.c1=new Chart(f1,{type:'line',data:{labels:lb1,datasets:[
+    {label:'Before BioBloc',data:before,borderColor:'#9ca3af',borderWidth:2,borderDash:[5,3],fill:false},
+    {label:'After BioBloc',data:after,borderColor:'#059669',borderWidth:2,fill:true,backgroundColor:'rgba(5,150,105,0.08)'}
+  ]},options:co});
+
+  // Chart 2: Projected cumulative savings (12 months)
+  var months=['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'];
+  var actual=[420,1420,null,null,null,null,null,null,null,null,null,null];
+  var projected=[420,1420,2840,4260,5680,7100,8520,9940,11360,12780,14200,17040];
+  var co2={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#F9FAFB',cornerRadius:8,padding:10,callbacks:{label:function(c){return c.dataset.label+': $'+c.parsed.y.toLocaleString()}}}},scales:{x:{ticks:{font:{size:10},color:'#9CA3AF'},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#9CA3AF',callback:function(v){return'$'+v.toLocaleString()}},grid:{color:'#f0f2f5'},border:{display:false}}},elements:{point:{radius:3,hoverRadius:5},line:{tension:.3}}};
+  var f2=document.getElementById('fin-c2');
+  if(f2)FNC.c2=new Chart(f2,{type:'line',data:{labels:months,datasets:[
+    {label:'Actual',data:actual,borderColor:'#059669',borderWidth:2.5,pointBackgroundColor:'#059669',spanGaps:false},
+    {label:'Projected',data:projected,borderColor:'rgba(5,150,105,0.4)',borderWidth:2,borderDash:[5,3],pointBackgroundColor:'rgba(5,150,105,0.4)',fill:true,backgroundColor:'rgba(5,150,105,0.05)'}
+  ]},options:co2});
+}
 </script>
